@@ -63,8 +63,6 @@ def sendEmail(stageName, status) {
         subject: "Jenkins: ${stageName} stage - ${status}",
         body: """<p>The ${stageName} stage has completed with status: <b>${status}</b>.</p>
                  <p>Job: ${env.JOB_NAME}<br>
-                 Build: ${env.BUILD_NUMBER}<br>
-                 URL: <a href='${env.BUILD_URL}'>${env.BUILD_URL}</a></p>""",
         to: "${env.RECIPIENT_EMAIL}",
         attachLog: true,
         mimeType: 'text/html'
