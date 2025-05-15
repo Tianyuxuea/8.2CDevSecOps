@@ -15,6 +15,18 @@ pipeline {
       steps {
         sh 'npm test || true' // Allows pipeline to continue despite test failures
       }
+      post {
+        success {
+          script {
+            sendEmail('Tests', 'SUCCESS')
+          }
+        }
+        failure {
+          script {
+            sendEmail('Tests', 'FAILURE')
+          }
+        }
+      }
     }
     stage('Generate Coverage Report') {
       steps {
@@ -26,6 +38,31 @@ pipeline {
       steps {
         sh 'npm audit || true' // This will show known CVEs in the output
       }
+      post {
+        success {
+          script {
+            sendEmail('Audit', 'SUCCESS')
+          }
+        }
+        failure {
+          script {
+            sendEmail('Audit', 'FAILURE')
+          }
+        }
+      }
     }
   }
+}
+
+def sendEmail(stageName, status) {
+    emailext (
+        subject: "Jenkins: ${stageName} stage - ${status}",
+        body: """<p>The ${stageName} stage has completed with status: <b>${status}</b>.</p>
+                 <p>Job: ${env.JOB_NAME}<br>
+                 Build: ${env.BUILD_NUMBER}<br>
+                 URL: <a href='${env.BUILD_URL}'>${env.BUILD_URL}</a></p>""",
+        to: "yang1326516679@gmail.com",
+        attachLog: true,
+        mimeType: 'text/html'
+    )
 }
