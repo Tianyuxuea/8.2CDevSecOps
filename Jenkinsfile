@@ -1,5 +1,9 @@
 pipeline {
   agent any
+
+  environment {
+        RECIPIENT_EMAIL = 'yang1326516679@gmail.com'
+  }
   stages {
     stage('Checkout') {
       steps {
@@ -61,7 +65,7 @@ def sendEmail(stageName, status) {
                  <p>Job: ${env.JOB_NAME}<br>
                  Build: ${env.BUILD_NUMBER}<br>
                  URL: <a href='${env.BUILD_URL}'>${env.BUILD_URL}</a></p>""",
-        to: "yang1326516679@gmail.com",
+        to: "${env.RECIPIENT_EMAIL}",
         attachLog: true,
         mimeType: 'text/html'
     )
